@@ -76,9 +76,14 @@ dfa = DFA(
 )
 
 # Uji string
-test_string = input("Masukkan string biner untuk diuji: ")
-cetak_dfa.draw_dfa_matplotlib(array_states, array_symbols, array_transition, initial, {final})
-if dfa.accepts_input(test_string):
-    print("✅ accepted")
-else:
-    print("❌ rejected")
+while True:
+    test_string = input("Masukkan string untuk diuji: ")
+    # cetak_dfa.draw_dfa_matplotlib(array_states, array_symbols, array_transition, initial, {final})
+    if dfa.accepts_input(test_string):
+        print("✅ accepted")
+    else:
+        print("❌ rejected")
+    uji_lagi = input("Uji string lagi? (y/n): ")
+    if uji_lagi.lower() != 'y':
+        print("Terimakasih telah menggunakan program ini")
+        break
