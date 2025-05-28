@@ -3,6 +3,9 @@
 ## 📋 Deskripsi Project
 Web-based application untuk analisis Deterministic Finite Automata (DFA) dan Non-deterministic Finite Automata (NFA) yang dikembangkan sebagai project mata kuliah Teori Bahasa dan Automata.
 
+Cek langsung:
+https://dfa-nfa-visualizer.vercel.app/
+
 ## 👥 Tim Pengembang - Kelompok 4
 - **Cholif Bima Ardiansyah** - L0123040
 - **Fathoni Nur Habibi** - L0123054
@@ -71,6 +74,7 @@ python -m http.server 8000
 ```bash
 npm start
 ```
+### Method 4: Langsung buka html
 
 **Then open browser:** `http://localhost:8000`
 
