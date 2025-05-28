@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFA & NFA Analyzer - Theory of Computation</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-project-diagram"></i> DFA & NFA Analyzer</h1>
+                <p>Theory of Computation Toolkit</p>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="tab-button active" data-tab="dfa-simulator">
+                <i class="fas fa-play-circle"></i> DFA Simulator
+            </button>
+            <button class="tab-button" data-tab="regex-nfa">
+                <i class="fas fa-code"></i> Regex to NFA
+            </button>
+            <button class="tab-button" data-tab="dfa-minimization">
+                <i class="fas fa-compress-arrows-alt"></i> DFA Minimization
+            </button>
+            <button class="tab-button" data-tab="dfa-equivalence">
+                <i class="fas fa-equals"></i> DFA Equivalence
+            </button>
+            <button class="tab-button" data-tab="about">
+                <i class="fas fa-info-circle"></i> About
+            </button>
+        </nav>
+
+        <!-- Tab Contents -->
+        <main class="main-content">
+            <!-- DFA Simulator Tab -->
+            <div id="dfa-simulator" class="tab-content active">
+                <div class="content-header">
+                    <h2>DFA Simulator & Tester</h2>
+                    <p>Build and test Deterministic Finite Automata</p>
+                </div>
+
+                <div class="content-grid">
+                    <div class="input-panel">
+                        <div class="form-section">
+                            <h3><i class="fas fa-cog"></i> DFA Configuration</h3>
+
+                            <div class="form-group">
+                                <label for="dfa-states">States (comma-separated):</label>
+                                <input type="text" id="dfa-states" placeholder="q0,q1,q2,q3" value="q0,q1,q2">
+                                <small>Example: q0,q1,q2</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dfa-alphabet">Alphabet (comma-separated):</label>
+                                <input type="text" id="dfa-alphabet" placeholder="0,1" value="0,1">
+                                <small>Example: 0,1</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dfa-initial">Initial State:</label>
+                                <select id="dfa-initial">
+                                    <option value="">Select initial state</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dfa-final">Final States (comma-separated):</label>
+                                <input type="text" id="dfa-final" placeholder="q2" value="q2">
+                                <small>Example: q2 or q1,q3</small>
+                            </div>
+
+                            <div class="form-group">
+                                <h4>Transition Function</h4>
+                                <div id="transition-table" class="transition-table">
+                                    <!-- Dynamically generated -->
+                                </div>
+                            </div>
+
+                            <div class="examples">
+                                <h4>Quick Examples:</h4>
+                                <div class="example-buttons">
+                                    <button class="example-btn" data-example="ending-01">Strings ending in '01'</button>
+                                    <button class="example-btn" data-example="even-zeros">Even number of 0's</button>
+                                    <button class="example-btn" data-example="multiple-of-3">Binary multiple of 3</button>
+                                    <button class="example-btn" data-example="with-loops">With Self-Loops</button>
+                                </div>
+                            </div>
+
+                            <div class="button-group">
+                                <button id="build-dfa" class="btn btn-primary">
+                                    <i class="fas fa-hammer"></i> Build DFA
+                                </button>
+                                <button id="clear-dfa" class="btn btn-secondary">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3><i class="fas fa-vial"></i> String Testing</h3>
+
+                            <div class="form-group">
+                                <label for="test-string">Test String:</label>
+                                <div class="test-input-row">
+                                    <input type="text" id="test-string" placeholder="Enter string to test (e.g., 010110)">
+                                    <button id="test-string-btn" class="btn btn-accent">
+                                        <i class="fas fa-play"></i> Test
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="test-result" class="test-result">
+                                <!-- Test results will appear here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="visualization-panel">
+                        <div class="viz-header">
+                            <h3><i class="fas fa-eye"></i> DFA Visualization</h3>
+                            <div class="viz-controls">
+                                <button id="center-graph" class="btn btn-small">
+                                    <i class="fas fa-compress"></i> Center
+                                </button>
+                            </div>
+                        </div>
+                        <div id="dfa-visualization" class="visualization-area">
+                            <div class="placeholder">
+                                <i class="fas fa-project-diagram"></i>
+                                <p>Build your DFA to see the visualization</p>
+                            </div>
+                        </div>
+                        <div id="step-trace" class="step-trace">
+                            <!-- String processing steps will appear here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Regex to NFA Tab -->
+            <div id="regex-nfa" class="tab-content">
+                <div class="content-header">
+                    <h2>Regular Expression to NFA Converter</h2>
+                    <p>Convert regular expressions to Non-deterministic Finite Automata using Thompson's algorithm</p>
+                </div>
+
+                <div class="content-grid">
+                    <div class="input-panel">
+                        <div class="form-section">
+                            <h3><i class="fas fa-code"></i> Regular Expression Input</h3>
+
+                            <div class="form-group">
+                                <label for="regex-input">Regular Expression:</label>
+                                <input type="text" id="regex-input" placeholder="(a|b)*abb" value="(a|b)*abb">
+                                <small>Supported operators: | (union), * (Kleene star), parentheses for grouping</small>
+                            </div>
+
+                            <div class="examples">
+                                <h4>Examples:</h4>
+                                <div class="example-buttons">
+                                    <button class="example-btn" data-regex="(a|b)*">(a|b)*</button>
+                                    <button class="example-btn" data-regex="a*b*">a*b*</button>
+                                    <button class="example-btn" data-regex="(a|b)*abb">(a|b)*abb</button>
+                                    <button class="example-btn" data-regex="a(a|b)*">a(a|b)*</button>
+                                </div>
+                            </div>
+
+                            <div class="algorithm-info" style="margin-top: 10px; padding: 15px; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196f3;">
+                                <h4 style="margin: 0 0 8px 0; color: #1976d2; font-size: 14px;">
+                                    <i class="fas fa-info-circle"></i> Algorithm Used
+                                </h4>
+                                <p style="margin: 0; font-size: 13px; color: #424242;">
+                                    This application uses <strong>Enhanced Thompson's Construction</strong> based on
+                                    for flexible and optimal NFA generation from any regular expression.
+                                </p>
+                            </div>
+
+                            <div class="lambda-toggle-section">
+                                <h4>Output Options:</h4>
+                                <div class="toggle-container">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="show-lambda-transitions" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <div class="toggle-label">
+                                        <span class="toggle-text">Show λ (Lambda) Transitions</span>
+                                        <small class="toggle-description">Toggle between NFAλ (with λ-transitions) and clean NFA</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="button-group">
+                                <button id="convert-regex" class="btn btn-primary">
+                                    <i class="fas fa-magic"></i> Convert to NFA
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3><i class="fas fa-vial"></i> NFA String Testing</h3>
+
+                            <div class="form-group">
+                                <label for="nfa-test-string">Test String:</label>
+                                <div class="test-input-row">
+                                    <input type="text" id="nfa-test-string" placeholder="Enter string to test (e.g., abb)">
+                                    <button id="test-nfa-string" class="btn btn-accent">
+                                        <i class="fas fa-play"></i> Test
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="nfa-test-result" class="test-result">
+                                <!-- NFA test results will appear here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="visualization-panel">
+                        <div class="viz-header">
+                            <h3><i class="fas fa-eye"></i> NFA Visualization</h3>
+                            <div class="viz-controls">
+                                <button id="center-nfa-graph" class="btn btn-small">
+                                    <i class="fas fa-compress"></i> Center
+                                </button>
+                            </div>
+                        </div>
+                        <div id="nfa-visualization" class="visualization-area">
+                            <div class="placeholder">
+                                <i class="fas fa-sitemap"></i>
+                                <p>Enter a regular expression to see the NFA</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DFA Minimization Tab -->
+            <div id="dfa-minimization" class="tab-content">
+                <div class="content-header">
+                    <h2>DFA Minimization</h2>
+                    <p>Minimize DFAs using partition refinement algorithm</p>
+                </div>
+
+                <div class="content-grid">
+                    <div class="input-panel">
+                        <div class="form-section">
+                            <h3><i class="fas fa-upload"></i> Input DFA for Minimization</h3>
+
+                            <div class="form-group">
+                                <label for="min-states">States (comma-separated):</label>
+                                <input type="text" id="min-states" placeholder="A,B,C,D" value="A,B,C,D">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="min-alphabet">Alphabet (comma-separated):</label>
+                                <input type="text" id="min-alphabet" placeholder="0,1" value="0,1">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="min-initial">Initial State:</label>
+                                <select id="min-initial">
+                                    <option value="">Select initial state</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="min-final">Final States (comma-separated):</label>
+                                <input type="text" id="min-final" placeholder="D" value="D">
+                            </div>
+
+                            <div class="form-group">
+                                <h4>Transition Function</h4>
+                                <div id="min-transition-table" class="transition-table">
+                                    <!-- Dynamically generated -->
+                                </div>
+                            </div>
+
+                            <div class="button-group">
+                                <button id="minimize-dfa" class="btn btn-primary">
+                                    <i class="fas fa-compress"></i> Minimize DFA
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="visualization-panel">
+                        <div class="viz-header">
+                            <h3><i class="fas fa-chart-line"></i> Before & After Comparison</h3>
+                        </div>
+
+                        <div class="comparison-view">
+                            <div class="before-after">
+                                <div class="original-dfa">
+                                    <div class="dfa-viz-header">
+                                        <h4>Original DFA</h4>
+                                        <button id="center-original-dfa" class="btn btn-small">
+                                            <i class="fas fa-crosshairs"></i> Center
+                                        </button>
+                                    </div>
+                                    <div id="original-dfa-viz" class="mini-visualization">
+                                        <div class="placeholder">
+                                            <p>Original DFA will appear here</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="minimized-dfa">
+                                    <div class="dfa-viz-header">
+                                        <h4>Minimized DFA</h4>
+                                        <button id="center-minimized-dfa" class="btn btn-small">
+                                            <i class="fas fa-crosshairs"></i> Center
+                                        </button>
+                                    </div>
+                                    <div id="minimized-dfa-viz" class="mini-visualization">
+                                        <div class="placeholder">
+                                            <p>Minimized DFA will appear here</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="minimization-stats" class="stats-panel">
+                                <!-- Statistics will appear here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DFA Equivalence Tab -->
+            <div id="dfa-equivalence" class="tab-content">
+                <div class="content-header">
+                    <h2>DFA Equivalence Checker</h2>
+                    <p>Check if two DFAs accept the same language</p>
+                </div>
+
+                <div class="content-grid">
+                    <div class="input-panel">
+                        <div class="form-section">
+                            <h3><i class="fas fa-upload"></i> DFA 1</h3>
+
+                            <div class="form-group">
+                                <label for="eq1-states">States:</label>
+                                <input type="text" id="eq1-states" placeholder="q0,q1,q2" value="q0,q1,q2">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="eq1-alphabet">Alphabet:</label>
+                                <input type="text" id="eq1-alphabet" placeholder="0,1" value="0,1">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="eq1-initial">Initial State:</label>
+                                <select id="eq1-initial">
+                                    <option value="">Select initial state</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="eq1-final">Final States:</label>
+                                <input type="text" id="eq1-final" placeholder="q2" value="q2">
+                            </div>
+
+                            <div class="form-group">
+                                <h4>Transitions</h4>
+                                <div id="eq1-transition-table" class="transition-table">
+                                    <!-- Dynamically generated -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3><i class="fas fa-upload"></i> DFA 2</h3>
+
+                            <div class="form-group">
+                                <label for="eq2-states">States:</label>
+                                <input type="text" id="eq2-states" placeholder="p0,p1" value="p0,p1">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="eq2-alphabet">Alphabet:</label>
+                                <input type="text" id="eq2-alphabet" placeholder="0,1" value="0,1">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="eq2-initial">Initial State:</label>
+                                <select id="eq2-initial">
+                                    <option value="">Select initial state</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="eq2-final">Final States:</label>
+                                <input type="text" id="eq2-final" placeholder="p1" value="p1">
+                            </div>
+
+                            <div class="form-group">
+                                <h4>Transitions</h4>
+                                <div id="eq2-transition-table" class="transition-table">
+                                    <!-- Dynamically generated -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="button-group">
+                            <button id="check-equivalence" class="btn btn-primary">
+                                <i class="fas fa-equals"></i> Check Equivalence
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="visualization-panel">
+                        <div class="viz-header">
+                            <h3><i class="fas fa-balance-scale"></i> Equivalence Comparison</h3>
+                        </div>
+
+                        <!-- Equivalence Status -->
+                        <div class="equivalence-status-container">
+                            <div id="equivalence-status" class="equivalence-status">
+                                <i class="fas fa-question-circle"></i>
+                                <p>Check equivalence to see result</p>
+                            </div>
+                        </div>
+
+                        <!-- DFA Visualizations -->
+                        <div class="dfa-visualizations">
+                            <div class="dfa-viz-container">
+                                <div class="dfa-viz-header">
+                                    <h4>DFA 1</h4>
+                                    <button id="center-eq-dfa1" class="btn btn-small">
+                                        <i class="fas fa-crosshairs"></i> Center
+                                    </button>
+                                </div>
+                                <div id="eq-dfa1-viz" class="visualization-area">
+                                    <div class="placeholder">
+                                        <p>DFA 1 visualization will appear here</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dfa-viz-container">
+                                <div class="dfa-viz-header">
+                                    <h4>DFA 2</h4>
+                                    <button id="center-eq-dfa2" class="btn btn-small">
+                                        <i class="fas fa-crosshairs"></i> Center
+                                    </button>
+                                </div>
+                                <div id="eq-dfa2-viz" class="visualization-area">
+                                    <div class="placeholder">
+                                        <p>DFA 2 visualization will appear here</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Equivalence Analysis -->
+                        <div id="equivalence-analysis" class="equivalence-analysis">
+                            <!-- Analysis will appear here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Tab -->
+            <div id="about" class="tab-content">
+                <div class="content-header">
+                    <h2>About This Project</h2>
+                    <p>Theory of Computation - DFA & NFA Analyzer</p>
+                </div>
+
+                <div class="about-container">
+                    <div class="about-section">
+                        <div class="project-info">
+                            <div class="project-header">
+                                <i class="fas fa-graduation-cap"></i>
+                                <h3>Academic Project</h3>
+                            </div>
+                            <div class="project-details">
+                                <h4>Program Studi Informatika</h4>
+                                <h4>Fakultas Teknologi Informasi dan Sains Data</h4>
+                                <h4>Universitas Sebelas Maret</h4>
+                                <h4>2025</h4>
+                            </div>
+                        </div>
+
+                        <div class="team-info">
+                            <div class="team-header">
+                                <i class="fas fa-users"></i>
+                                <h3>Disusun Oleh: Kelompok 4</h3>
+                            </div>
+                            <div class="team-members">
+                                <div class="member">
+                                    <div class="member-name">Cholif Bima Ardiansyah</div>
+                                    <div class="member-id">L0123040</div>
+                                </div>
+                                <div class="member">
+                                    <div class="member-name">Fathoni Nur Habibi</div>
+                                    <div class="member-id">L0123054</div>
+                                </div>
+                                <div class="member">
+                                    <div class="member-name">Gibril Muhammad Alghifari</div>
+                                    <div class="member-id">L0123059</div>
+                                </div>
+                                <div class="member">
+                                    <div class="member-name">Jabran Javier</div>
+                                    <div class="member-id">L0123069</div>
+                                </div>
+                                <div class="member">
+                                    <div class="member-name">Josephine Angelia Pramudya</div>
+                                    <div class="member-id">L0123071</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="features-info">
+                            <div class="features-header">
+                                <i class="fas fa-cogs"></i>
+                                <h3>Features</h3>
+                            </div>
+                            <div class="features-list">
+                                <div class="feature-item">
+                                    <i class="fas fa-play-circle"></i>
+                                    <div>
+                                        <h4>DFA Simulator</h4>
+                                        <p>Interactive DFA builder with step-by-step string testing and visualization</p>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-code"></i>
+                                    <div>
+                                        <h4>Regex to NFA Converter</h4>
+                                        <p>Convert regular expressions to NFAs using Thompson's construction algorithm</p>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-compress-arrows-alt"></i>
+                                    <div>
+                                        <h4>DFA Minimization</h4>
+                                        <p>Minimize DFAs using partition refinement algorithm with before/after comparison</p>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-equals"></i>
+                                    <div>
+                                        <h4>DFA Equivalence Checker</h4>
+                                        <p>Check if two DFAs accept the same language with detailed analysis</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tech-info">
+                            <div class="tech-header">
+                                <i class="fas fa-code-branch"></i>
+                                <h3>Technologies Used</h3>
+                            </div>
+                            <div class="tech-stack">
+                                <div class="tech-item">
+                                    <i class="fab fa-html5"></i>
+                                    <span>HTML5</span>
+                                </div>
+                                <div class="tech-item">
+                                    <i class="fab fa-css3-alt"></i>
+                                    <span>CSS3</span>
+                                </div>
+                                <div class="tech-item">
+                                    <i class="fab fa-js-square"></i>
+                                    <span>JavaScript</span>
+                                </div>
+                                <div class="tech-item">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>D3.js</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2025 Theory of Computation Project - DFA & NFA Analyzer | Kelompok 4 - Universitas Sebelas Maret</p>
+        </footer>
+
+        <!-- Scripts -->
+        <script src="js/script.js"></script>
+    </div>
+</body>
+</html>

@@ -1,0 +1,94 @@
+{
+  "name": "dfa-nfa-web-analyzer",
+  "version": "1.0.0",
+  "description": "Web-based application for analyzing Deterministic Finite Automata (DFA) and Non-deterministic Finite Automata (NFA)",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "start:win": "start-server.bat",
+    "start:unix": "bash start-server.sh"
+  },
+  "keywords": [
+    "dfa",
+    "nfa",
+    "automata",
+    "theory-of-computation",
+    "finite-automata",
+    "regex",
+    "thompson-construction",
+    "dfa-minimization",
+    "equivalence-checking",
+    "visualization",
+    "d3js",
+    "education",
+    "computer-science"
+  ],
+  "authors": [
+    {
+      "name": "Cholif Bima Ardiansyah",
+      "id": "L0123040"
+    },
+    {
+      "name": "Fathoni Nur Habibi",
+      "id": "L0123054"
+    },
+    {
+      "name": "Gibril Muhammad Alghifari",
+      "id": "L0123059"
+    },
+    {
+      "name": "Jabran Javier",
+      "id": "L0123069"
+    },
+    {
+      "name": "Josephine Angelia Pramudya",
+      "id": "L0123071"
+    }
+  ],
+  "institution": {
+    "name": "Universitas Sebelas Maret",
+    "faculty": "Fakultas Teknologi Informasi dan Sains Data",
+    "program": "Program Studi Informatika",
+    "year": "2025",
+    "group": "Kelompok 4"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "d3": "^7.0.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "local"
+  },
+  "bugs": {
+    "url": "local"
+  },
+  "homepage": "index.html",
+  "engines": {
+    "python": ">=3.6"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "features": [
+    "DFA Simulator with interactive visualization",
+    "Regex to NFA converter with Thompson's construction",
+    "Lambda transitions toggle for educational purposes",
+    "DFA minimization using partition refinement",
+    "DFA equivalence checker",
+    "Step-by-step string testing with animations",
+    "Responsive design with modern UI/UX",
+    "Multiple example configurations",
+    "Real-time visualization using D3.js"
+  ],
+  "technologies": [
+    "HTML5",
+    "CSS3",
+    "JavaScript (ES6+)",
+    "D3.js",
+    "SVG"
+  ]
+}
